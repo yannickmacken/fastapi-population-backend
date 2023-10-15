@@ -1,4 +1,5 @@
 import asyncio
+import math
 import os
 from typing import List, Optional
 from datetime import datetime
@@ -34,8 +35,9 @@ def get_database():
 
 
 class Reading(BaseModel):
-    value: float
-    timestamp: Optional[datetime]  # Allow clients to submit a timestamp, but it's optional
+    value: int
+    factorial: Optional[int]
+    timestamp: Optional[datetime]
 
 
 @app.post("/submit/")
@@ -43,6 +45,14 @@ async def submit_reading(reading: Reading = Body(...)):
     """Submit reading to database."""
     db = get_database()
     collection = db['readings']
+
+    # If value is higher than 20, factorial becomes too large to save on MongoDB
+    if reading.value > 20:
+        raise HTTPException(status_code=400, detail="Value is too high!")
+
+    # If the client doesn't provide a factorial, calculate it
+    if not reading.factorial:
+        reading.factorial = math.factorial(reading.value)
 
     # If the client doesn't provide a timestamp, generate one
     if not reading.timestamp:

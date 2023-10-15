@@ -12,7 +12,7 @@ class TestAPI(unittest.TestCase):
 
     # Setup
     sample_reading = {
-        "value": 42.5
+        "value": 20
     }
 
     def test_submit_reading(self):
