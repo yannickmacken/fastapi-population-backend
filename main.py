@@ -7,11 +7,21 @@ import motor.motor_asyncio
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Body
 from pydantic import BaseModel
+from starlette.middleware.cors import CORSMiddleware
 
 
 load_dotenv()
 
 app = FastAPI()
+
+# Cors middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Can be tightened for production.
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_database():
